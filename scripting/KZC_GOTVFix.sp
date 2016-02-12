@@ -1,5 +1,5 @@
 #include<sourcemod>
-#define PLUGIN_VERSION "1.1.1"
+#define PLUGIN_VERSION "1.2.0"
 
 public Plugin:myinfo =
 {
@@ -11,6 +11,7 @@ public Plugin:myinfo =
 };
 new Handle:cvar_tv_enable;
 new Handle:cvar_tv_autorecord;
+new bool:first_player;
 
 public OnPluginStart()
 {
@@ -32,10 +33,24 @@ public Force_AutoRecord_Disable(Handle:cvar, const String:oldVal[], const String
     SetConVarInt(cvar,0);
 }
 
-public OnMapStart()
+public OnClientPostAdminCheck(int client)
 {
-    CreateTimer(5.0,StartRecord);
-    CreateTimer(10.0,RestartGame);
+	if (first_player == false) 
+	{
+		CreateTimer(5.0,StartRecord);
+		CreateTimer(10.0,RestartGame);
+		first_player = true;
+	}
+
+}
+
+public OnClientDisconnect_Post(int client)
+{
+	if (GetClientCount() == 0) 
+	{
+		ServerCommand("tv_stoprecord");
+		first_player = false;
+	}
 }
 
 public Action:StartRecord(Handle:timer,any:client)
