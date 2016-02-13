@@ -1,5 +1,5 @@
 #include<sourcemod>
-#define PLUGIN_VERSION "1.2.0"
+#define PLUGIN_VERSION "1.2.1"
 
 public Plugin:myinfo =
 {
@@ -35,7 +35,7 @@ public Force_AutoRecord_Disable(Handle:cvar, const String:oldVal[], const String
 
 public OnClientPostAdminCheck(int client)
 {
-	if (first_player == false) 
+	if (first_player == false && IsFakeClient(client) == false) 
 	{
 		CreateTimer(5.0,StartRecord);
 		CreateTimer(10.0,RestartGame);
